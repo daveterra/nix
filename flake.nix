@@ -1,37 +1,127 @@
 {
-  description = "Daves Darwin system";
+  description = "Daves Nix Configs";
+
+  nixConfig = {
+    # builders = [ "ssh-ng://builder@linux-builder aarch64-linux,x86_64-linux" ];
+    # builders-use-substitutes = true;
+    extra-substituters = [
+      "https://nix-community.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+    ];
+  };
+
+  # substituters = [
+  #       "https://xe.cachix.org"
+  #       "https://nix-community.cachix.org"
+  #       "https://cuda-maintainers.cachix.org"
+  #       "https://cache.floxdev.com?trusted=1"
+  #       "https://cache.garnix.io"
+  #     ];
 
   inputs = {
-    stable.url = "nixpkgs";
-    unstable.url = "github:nixos/nixpkgs/master";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+
     nur.url = "github:nix-community/NUR";
 
-    darwin = {
+    nix-darwin = {
       url = "github:LnL7/nix-darwin";
-      inputs.nixpkgs.follows = "stable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
+
     home-manager = {
       url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "stable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, darwin,  home-manager, ... }@inputs: {
-    darwinConfigurations."Hal" = darwin.lib.darwinSystem {
-      system = "x86_64-darwin";
-      specialArgs = { inherit inputs; };
-      modules = [
-        ./dave.nix
-        home-manager.darwinModule
-        {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
+
+  outputs = { self, nixpkgs, nix-darwin, home-manager, nixos-generators, ... }@inputs:
+    let
+      inherit (self) outputs;
+      forAllSystems = nixpkgs.lib.genAttrs [
+        "aarch64-linux"
+        "x86_64-linux"
+        "aarch64-darwin"
+      ];
+    in
+    rec {
+      overlays = import ./overlays { inherit inputs; };
+
+      devShells = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        with pkgs; rec  {
+          default = mkShell {
+            NIX_CONFIG = "experimental-features = nix-command flakes";
+            nativeBuildInputs = [
+              nix
+              git
+              pkgs.home-manager
+              nix-darwin.packages.${system}.default
+            ];
+            packages = [ hello ];
           };
         }
-        ./modules/home.nix
-      ];
+      );
+
+      # packages.aarch64-darwin.doImage = let
+      #     pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      # in
+      #   import ./do_image.nix {inherit pkgs;};
+
+      # packages.aarch64-darwin.doImage = let 
+      #   pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+      # in pkgs.lib.nixosSystem {
+      #   system = "x86_64-linux";
+      #   modules = [ 
+      #     {
+      #       imports = [
+      #         "${pkgs}/nixos/modules/virtualisation/digital-ocean-image.nix"
+      #       ];
+      #     }
+      #   ];
+      # };
+
+      packages.aarch64-darwin.doImage = nixos-generators.nixosGenerate {
+        system = "x86_64-linux";
+        modules = [ ];
+        format = "do";
+      };
+
+      packages.aarch64-darwin.default = packages.aarch64-darwin.doImage;
+
+      darwinConfigurations."Hal" =
+        let
+          system = "aarch64-darwin";
+        in
+        nix-darwin.lib.darwinSystem
+          {
+            inherit system;
+            specialArgs = { inherit inputs outputs; };
+            modules = [
+              ./config
+              ./computers/hal
+              home-manager.darwinModule
+              {
+                home-manager = {
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                };
+              }
+            ];
+          };
     };
-  };
 }
 
