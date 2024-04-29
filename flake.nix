@@ -53,6 +53,19 @@
         "x86_64-linux"
         "aarch64-darwin"
       ];
+
+      forAllLinuxSystems = nixpkgs.lib.genAttrs [
+        # "Max" from flight of the navigator
+        # "COS" from X-Files
+        # "Ziggy" from quantum leap
+        "GladOS"
+        "DeepThought"
+      ];
+
+      forAllDarwinSystems = nixpkgs.lib.genAttrs [
+        "Hal"
+        "Cinco" # Or should it be Cinco
+      ];
     in
     rec {
       overlays = import ./overlays { inherit inputs; };
@@ -102,26 +115,27 @@
 
       packages.aarch64-darwin.default = packages.aarch64-darwin.doImage;
 
-      darwinConfigurations."Hal" =
+
+      darwinConfigurations = forAllDarwinSystems (computer:
         let
           system = "aarch64-darwin";
         in
-        nix-darwin.lib.darwinSystem
-          {
-            inherit system;
-            specialArgs = { inherit inputs outputs; };
-            modules = [
-              ./config
-              ./computers/hal
-              home-manager.darwinModule
-              {
-                home-manager = {
-                  useGlobalPkgs = true;
-                  useUserPackages = true;
-                };
-              }
-            ];
-          };
+        nix-darwin.lib.darwinSystem {
+          inherit system;
+          specialArgs = { inherit inputs outputs; };
+          modules = [
+            ./config
+            ./computers/${computer}
+            home-manager.darwinModule
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+              };
+            }
+          ];
+        }
+      );
     };
 }
 
