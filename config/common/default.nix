@@ -1,27 +1,36 @@
-{ config, lib, pkgs, system, inputs, outputs, ... }: {
-
+{
+  config,
+  lib,
+  pkgs,
+  system,
+  inputs,
+  outputs,
+  ...
+}: {
   imports = [
     ./helix.nix
   ];
 
-  nixpkgs.overlays = [ outputs.overlays.unstable-packages ];
+  nixpkgs.overlays = [outputs.overlays.unstable-packages];
 
   services.nix-daemon.enable = true;
 
   environment.systemPackages = with pkgs; [
-    # Command line tools 
+    # Command line tools
+    # bash # Needed for tmux/extracto, also just nice to have newer version
+    # ncdu # Better du -csh
     aspell
     aspellDicts.en
     base16-builder
-    # bash # Needed for tmux/extracto, also just nice to have newer version
     bat # replaces cat
     bitwarden-cli
     btop # Fancier top with disk and net usage
     direnv
     direnv
     docker-compose
+    du-dust
     entr # Do something when files change
-    eza # replaces ls 
+    eza # replaces ls
     fish
     flavours
     frogmouth # Markdown reader
@@ -33,22 +42,20 @@
     jq # Json tool
     lazygit
     ltex-ls
-    # ncdu # Better du -csh
     nix
     nmap
     pv
     restic # Backup util
     ripgrep
     rsync
-    silver-searcher # ag 
+    silver-searcher # ag
     starship
     tmux
     tmuxinator
     tree
     walk # Util for browsing folders
     wget
-    du-dust
-    zoxide # replaces cd 
+    zoxide # replaces cd
 
     # Fun-like utils
     neofetch
@@ -91,7 +98,6 @@
   #   dnssec = "false";
   # };
 
-
   nix = {
     package = pkgs.nixVersions.stable;
     # package = pkgs.nix;
@@ -106,7 +112,7 @@
         "https://nix-community.cachix.org"
         "https://djt.cachix.org"
       ];
-      trusted-users = [ "root" "dave" ];
+      trusted-users = ["root" "dave"];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "djt.cachix.org-1:VF6a7Gm3YV13DtcRSoojVO+ZZOuS1ScOCcN/0ESJdGg="
@@ -116,4 +122,3 @@
 
   # system.stateVersion = (if pkgs.stdenv.isDarwin == "aarch64-darwin" then 4 else "23.11");
 }
-

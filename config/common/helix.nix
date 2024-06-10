@@ -1,8 +1,14 @@
-{ self, config, lib, pkgs, system, ... }:
+{
+  self,
+  config,
+  lib,
+  pkgs,
+  system,
+  ...
+}:
 with lib; let
   cfg = config.dave.helix;
-in
-{
+in {
   options = {
     dave.helix = {
       enabled = mkOption {
@@ -18,15 +24,19 @@ in
   config = mkIf (cfg.enabled) {
     environment.systemPackages = with pkgs; [
       # Helix and LSPs
+      alejandra # Nix formatter
+      dprint # Markdown formatter (also json, toml?)
       helix
       marksman
       nodePackages_latest.bash-language-server
       nodePackages_latest.vscode-langservers-extracted
+      pkgs.unstable.typos-lsp
       python310Packages.python-lsp-server
       rnix-lsp
+      rust-analyzer
+      rustfmt
       swift-format
       typos
-      pkgs.unstable.typos-lsp
     ];
   };
 }

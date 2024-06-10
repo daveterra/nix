@@ -81,6 +81,7 @@
             nativeBuildInputs = [
               nix
               git
+              cachix
               pkgs.home-manager
               nix-darwin.packages.${system}.default
             ];
@@ -116,6 +117,20 @@
       packages.aarch64-darwin.default = packages.aarch64-darwin.doImage;
 
 
+      nixosConfigurations = forAllLinuxSystems (computer: 
+      let 
+
+      in
+        nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [ 
+            nixos-generators.nixosModules.all-formats
+            computers/${computer}.nix
+          ];
+        }
+      );
+
+
       darwinConfigurations = forAllDarwinSystems (computer:
         let
           system = "aarch64-darwin";
@@ -125,7 +140,8 @@
           specialArgs = { inherit inputs outputs; };
           modules = [
             ./config
-            ./computers/${computer}
+            nixos-generators.nixosModules.all-formats
+            ./computers/${computer}.nix
             home-manager.darwinModule
             {
               home-manager = {
