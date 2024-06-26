@@ -21,6 +21,7 @@
     # ncdu # Better du -csh
     aspell
     aspellDicts.en
+    atuin
     base16-builder
     bat # replaces cat
     bitwarden-cli
