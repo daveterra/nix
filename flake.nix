@@ -117,13 +117,13 @@
       packages.aarch64-darwin.default = packages.aarch64-darwin.doImage;
 
 
-      nixosConfigurations = forAllLinuxSystems (computer: 
-      let 
+      nixosConfigurations = forAllLinuxSystems (computer:
+        let
 
-      in
+        in
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          modules = [ 
+          modules = [
             nixos-generators.nixosModules.all-formats
             computers/${computer}.nix
           ];
