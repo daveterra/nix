@@ -26,13 +26,13 @@ in {
       # Helix and LSPs
       alejandra # Nix formatter
       dprint # Markdown formatter (also json, toml?)
-      helix
+      unstable.helix
       marksman
       nodePackages_latest.bash-language-server
       nodePackages_latest.vscode-langservers-extracted
       pkgs.unstable.typos-lsp
       python310Packages.python-lsp-server
-      rnix-lsp
+      # rnix-lsp
       rust-analyzer
       rustfmt
       swift-format

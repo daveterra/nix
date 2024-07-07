@@ -29,6 +29,10 @@ with lib; let
 in {
   imports = [./pam.nix ./brew.nix];
   config = mkIf (pkgs.stdenv.isDarwin) {
+    # for i in {1..32}; do sudo dscl . -delete /Users/_nixbld$i; done
+    nix.configureBuildUsers = true; # TODO, this should be enabled see https://github.com/LnL7/nix-darwin/issues/970
+    ids.uids.nixbld = lib.mkForce 305;
+
     system.keyboard.enableKeyMapping = true;
     system.keyboard.remapCapsLockToEscape = true;
 

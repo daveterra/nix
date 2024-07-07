@@ -58,6 +58,12 @@
     wget
     zoxide # replaces cd
 
+    # Taskwarrior things...
+    unstable.taskwarrior3
+    taskwarrior-tui
+    tasksh
+    vit
+
     # Fun-like utils
     neofetch
     lolcat
