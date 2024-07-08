@@ -60,7 +60,7 @@
 
     # Taskwarrior things...
     unstable.taskwarrior3
-    taskwarrior-tui
+    unstable.taskwarrior-tui
     tasksh
     vit
 
