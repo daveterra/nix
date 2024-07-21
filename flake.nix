@@ -82,8 +82,7 @@
         with pkgs; rec {
           default = mkShell {
             NIX_CONFIG = "
-            experimental-features = nix-command flakes; 
-            nix.configureBuildUsers = false;
+            experimental-features = nix-command flakes
             ";
             nativeBuildInputs = [
               nix
