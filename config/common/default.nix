@@ -27,7 +27,6 @@
     bitwarden-cli
     btop # Fancier top with disk and net usage
     direnv
-    direnv
     docker-compose
     du-dust
     entr # Do something when files change
