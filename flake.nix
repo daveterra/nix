@@ -4,6 +4,7 @@
   nixConfig = {
     # builders = [ "ssh-ng://builder@linux-builder aarch64-linux,x86_64-linux" ];
     # builders-use-substitutes = true;
+    build-users-group = [];
     extra-substituters = [
       "https://nix-community.cachix.org"
     ];
