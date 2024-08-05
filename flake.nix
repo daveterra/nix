@@ -6,10 +6,12 @@
     # builders-use-substitutes = true;
     build-users-group = [];
     extra-substituters = [
-      "https://nix-community.cachix.org"
+      # "https://nix-community.cachix.org"
+      # "https://djt.cachix.org"
     ];
     extra-trusted-public-keys = [
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      # "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      # "djt.cachix.org-1:VF6a7Gm3YV13DtcRSoojVO+ZZOuS1ScOCcN/0ESJdGg="
     ];
   };
 
@@ -22,7 +24,7 @@
   #     ];
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     nur.url = "github:nix-community/NUR";
@@ -70,7 +72,7 @@
 
     forAllDarwinSystems = nixpkgs.lib.genAttrs [
       "Hal"
-      "Cinco" # Or should it be Cinco
+      "Cinco"
     ];
   in rec {
     overlays = import ./overlays {inherit inputs;};

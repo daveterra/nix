@@ -32,6 +32,7 @@
     entr # Do something when files change
     eza # replaces ls
     fish
+    unstable.nushell
     flavours
     frogmouth # Markdown reader
     fswatch
@@ -106,7 +107,6 @@
 
   nix = {
     package = pkgs.nixVersions.stable;
-    # package = pkgs.nix;
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
@@ -115,16 +115,14 @@
       auto-optimise-store = true;
       sandbox = true;
       substituters = [
-        "https://nix-community.cachix.org"
+        # "https://nix-community.cachix.org"
         "https://djt.cachix.org"
       ];
       trusted-users = ["root" "dave"];
       trusted-public-keys = [
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        # "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "djt.cachix.org-1:VF6a7Gm3YV13DtcRSoojVO+ZZOuS1ScOCcN/0ESJdGg="
       ];
     };
   };
-
-  # system.stateVersion = (if pkgs.stdenv.isDarwin == "aarch64-darwin" then 4 else "23.11");
 }
